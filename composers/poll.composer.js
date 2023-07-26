@@ -3,11 +3,11 @@ import saveData from '../helpers/saveData.js';
 
 export const pollComposer = new Composer();
 
-pollComposer.command('poll', async ctx => {
+pollComposer.command('opros', ctx => {
     if (ctx.from.id !== Number(process.env.ADMIN_ID) && ctx.chat.id < 0) return; //проверка на админа и что боту пишут лично
 
     try {
-        ctx.scene.enter('poll');
+        ctx.scene.enter('poll_id');
     } catch (err) {
         console.error('Error' + err);
     }

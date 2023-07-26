@@ -2,7 +2,7 @@ import { Scenes } from 'telegraf';
 import saveData from '../helpers/saveData.js';
 
 export const pollScene = new Scenes.WizardScene(
-    'poll',
+    'poll_id',
     ctx => {
         ctx.reply('Задайте текст вопросу');
 
@@ -23,7 +23,7 @@ export const pollScene = new Scenes.WizardScene(
 
         if (date.getFullYear() != year && date.getMonth() != month && date.getDate() != day) {
             ctx.reply('Дата не корректна');
-            // ctx.scene.leave();
+            ctx.scene.leave();
         }
 
         ctx.wizard.state.oprosData.date = dateArr;
