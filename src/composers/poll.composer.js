@@ -1,5 +1,4 @@
 import { Composer } from 'telegraf';
-import saveData from '../helpers/saveData.js';
 
 export const pollComposer = new Composer();
 
@@ -43,11 +42,18 @@ pollComposer.command('opros', ctx => {
 
 pollComposer.on('poll_answer', ctx => {
     const answer = {
-        'poll_id': ctx.pollAnswer.poll_id,
         'user_id': ctx.pollAnswer.user.id,
+        'poll_id': ctx.pollAnswer.poll_id,
         'answer_id': ctx.pollAnswer.option_ids[0],
         'created_at': new Date().getTime(),
     };
 
-    saveData('answers', answer);
+    try {
+        ctx.db.execute(
+            "INSERT INTO `answers`(`user_id`, `poll_id`, `answer_id`, `created_at`) VALUES (?, ?, ?, ?)",
+            [answer.user_id, answer.poll_id, answer.answer_id, answer.created_at]
+        );
+    } catch (err) {
+        console.log(err)
+    }
 });

@@ -1,5 +1,5 @@
 import { Scenes } from 'telegraf';
-import saveData from '../helpers/saveData.js';
+import { dateErr } from '../helpers/dateErr.js';
 
 export const pollScene = new Scenes.WizardScene(
     'poll_id',
@@ -19,14 +19,12 @@ export const pollScene = new Scenes.WizardScene(
         const dateArr = ctx.message.text.trim().split('.');
         const [day, month, year] = dateArr;
 
-        const date = new Date(year, month, day);
-
-        if (date.getFullYear() != year && date.getMonth() != month && date.getDate() != day) {
+        if (dateErr(year, month, day)) {
             ctx.reply('Дата не корректна');
             ctx.scene.leave();
         }
 
-        ctx.wizard.state.oprosData.date = dateArr;
+        ctx.wizard.state.oprosData.date = [year, month, day];
 
         const answers = [
             'Да',
@@ -45,12 +43,19 @@ export const pollScene = new Scenes.WizardScene(
         const poll = {
             'poll_id': (await sendPoll).poll.id,
             'poll_question': (await sendPoll).poll.question,
-            'poll_answers': (await sendPoll).poll.options,
+            'answer': (await sendPoll).poll.options,
             'event_date': ctx.wizard.state.oprosData.date,
             'created_at': new Date().getTime()
         };
 
-        saveData('polls', poll);
+        try {
+            ctx.db.execute(
+                "INSERT INTO `polls`(`poll_id`, `poll_question`, `answer`, `event_date`, `created_at`) VALUES (?, ?, ?, ?, ?)",
+                [poll.poll_id, poll.poll_question, poll.answer, poll.event_date.join('-'), poll.created_at]
+            );
+        } catch (err) {
+            console.log(err)
+        }
 
         ctx.scene.leave();
     }

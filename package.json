@@ -4,8 +4,10 @@
   "description": "",
   "main": "bot.js",
   "scripts": {
-    "npm install": "npm install",
-    "run": "node bot/bot.js"
+    "runSrc": "node src/bot.js",
+    "runDist": "node src/bot.js",
+    "build": "webpack --config webpack.config.js",
+    "npm install": "npm install"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +15,12 @@
   "dependencies": {
     "cron": "^2.3.1",
     "dotenv": "^16.3.1",
+    "mysql2": "^3.5.2",
     "telegraf": "^4.12.2"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
 }

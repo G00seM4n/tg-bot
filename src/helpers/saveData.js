@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 export default function saveData(fileName, obj) {
     if (!fs.existsSync(`data/${fileName}.json`)) {
         fs.writeFile(`data/${fileName}.json`, JSON.stringify([obj]), function (err) {
@@ -18,4 +16,4 @@ export default function saveData(fileName, obj) {
             if (err) throw err;
         });
     });
-}
+};
