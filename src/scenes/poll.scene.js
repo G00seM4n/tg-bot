@@ -50,7 +50,7 @@ export const pollScene = new Scenes.WizardScene(
 
         try {
             ctx.db.execute(
-                "INSERT INTO `polls`(`poll_id`, `poll_question`, `answer`, `event_date`, `created_at`) VALUES (?, ?, ?, ?, ?)",
+                'INSERT INTO `polls`(`poll_id`, `poll_question`, `answer`, `event_date`, `created_at`) VALUES (?, ?, ?, ?, ?)',
                 [poll.poll_id, poll.poll_question, poll.answer, poll.event_date.join('-'), poll.created_at]
             );
         } catch (err) {

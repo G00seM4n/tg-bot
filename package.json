@@ -1,25 +1,25 @@
 {
-  "name": "tg-quiz",
+  "name": "tg-poll",
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
+  "type": "module",
   "scripts": {
     "runSrc": "node src/bot.js",
-    "runDist": "node src/bot.js",
+    "runDist": "node dist/bot.js",
     "build": "webpack --config webpack.config.js",
-    "npm install": "npm install"
+    "npm i": "npm i"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cron": "^2.3.1",
-    "dotenv": "^16.3.1",
     "mysql2": "^3.5.2",
     "telegraf": "^4.12.2"
   },
-  "type": "module",
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   }
