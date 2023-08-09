@@ -1,9 +1,8 @@
-// .env
+// Modules
 import { config } from 'dotenv';
-config();
-
-// Telegraf
 import { Telegraf, Scenes, session } from 'telegraf';
+import { createConnection } from 'mysql2';
+import { CronJob } from 'cron';
 
 // Scenes
 import { pollScene } from './scenes/poll.scene.js';
@@ -12,11 +11,7 @@ import { pollScene } from './scenes/poll.scene.js';
 import { startComposer } from './composers/start.composer.js';
 import { pollComposer } from './composers/poll.composer.js';
 
-// mySql
-import { createConnection } from 'mysql2';
-
-// cron
-import { CronJob } from 'cron';
+config();
 
 const bot = new Telegraf(process.env.TELEGRAF_KEY);
 
@@ -38,23 +33,29 @@ const reminder = new CronJob(
     '0 12 * * *', // Выполняется каждый день в 12:00 (https://crontab.guru/#0_12_*_*_*)
     () => {
         const today = new Date();
-        const now = today.toLocaleDateString('ru-RU').split('.'); // получить сегодняшнюю дату в формате '[MM, DD, YYYY]'
+        const tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
 
-        console.log(now);
+        const dateTomorrow = {
+            year: tomorrow.getFullYear(),
+            month: tomorrow.getMonth() + 1,
+            day: tomorrow.getDate()
+        };
 
-        /*
-            Каждый день в 12:00 делать запрос в таблицу "poll" и искать в ней опрос,
-            у которого значение "event_date" =(равен) сегодняшней дате -(минус) 1 день.
-            Если есть совпадение, то отправить в чат оповещение.
-        */
+        try {
+            bot.context.db.query(
+                'SELECT * FROM `polls` WHERE `event_date` = ?',
+                [`${dateTomorrow.year}-${dateTomorrow.month}-${dateTomorrow.day}`],
+                (err, results) => {
+                    if (results.length < 0) return;
 
-        // ctx.db.query(
-        //     'SELECT * FROM `polls` WHERE `event_date` = ?',
-        //     [/* Дата */],
-        //     function (err, results) {
-        //         console.log(results);
-        //     }
-        // );
+                    results.forEach(poll => {
+                        bot.telegram.sendMessage(process.env.GROUP_ID, `Завтра что-то будет: ${poll.poll_question}`);
+                    });
+                }
+            );
+        } catch (err) {
+            console.error(err);
+        }
     },
     null,
     true,

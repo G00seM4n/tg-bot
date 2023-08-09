@@ -54,7 +54,7 @@ export const pollScene = new Scenes.WizardScene(
                 [poll.poll_id, poll.poll_question, poll.answer, poll.event_date.join('-'), poll.created_at]
             );
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
 
         ctx.scene.leave();

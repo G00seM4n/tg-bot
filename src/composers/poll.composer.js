@@ -26,6 +26,6 @@ pollComposer.on('poll_answer', ctx => {
             [answer.user_id, answer.poll_id, answer.answer_id, answer.created_at]
         );
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
 });
